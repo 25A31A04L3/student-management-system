@@ -1,0 +1,138 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+#define MAX 100
+#define SUBJECTS 3
+
+// Structure to store student details
+struct Student {
+    int roll;
+    char name[50];
+    float marks[SUBJECTS];
+    float total;
+    float average;
+    char grade;
+};
+
+struct Student students[MAX];
+int count = 0;
+
+// Function to calculate grade
+char calculateGrade(float avg) {
+    if (avg >= 90)
+        return 'A';
+    else if (avg >= 75)
+        return 'B';
+    else if (avg >= 60)
+        return 'C';
+    else if (avg >= 50)
+        return 'D';
+    else
+        return 'F';
+}
+
+// Function to add a student
+void addStudent() {
+    if (count >= MAX) {
+        printf("Student limit reached!\n");
+        return;
+    }
+
+    printf("\nEnter Roll Number: ");
+    scanf("%d", &students[count].roll);
+
+    printf("Enter Name: ");
+    scanf(" %[^\n]", students[count].name);
+
+    students[count].total = 0;
+    for (int i = 0; i < SUBJECTS; i++) {
+        printf("Enter marks for Subject %d: ", i + 1);
+        scanf("%f", &students[count].marks[i]);
+        students[count].total += students[count].marks[i];
+    }
+
+    students[count].average = students[count].total / SUBJECTS;
+    students[count].grade = calculateGrade(students[count].average);
+
+    count++;
+    printf("Student added successfully!\n");
+}
+
+// Function to display all students
+void displayStudents() {
+    if (count == 0) {
+        printf("\nNo student records found.\n");
+        return;
+    }
+
+    printf("\n%-10s %-20s %-10s %-10s %-5s\n",
+           "Roll No", "Name", "Total", "Average", "Grade");
+    printf("------------------------------------------------------------\n");
+
+    for (int i = 0; i < count; i++) {
+        printf("%-10d %-20s %-10.2f %-10.2f %-5c\n",
+               students[i].roll,
+               students[i].name,
+               students[i].total,
+               students[i].average,
+               students[i].grade);
+    }
+}
+
+// Function to search a student by roll number
+void searchStudent() {
+    int roll, found = 0;
+
+    printf("\nEnter Roll Number to search: ");
+    scanf("%d", &roll);
+
+    for (int i = 0; i < count; i++) {
+        if (students[i].roll == roll) {
+            printf("\nStudent Details:\n");
+            printf("Roll No : %d\n", students[i].roll);
+            printf("Name    : %s\n", students[i].name);
+            printf("Total   : %.2f\n", students[i].total);
+            printf("Average : %.2f\n", students[i].average);
+            printf("Grade   : %c\n", students[i].grade);
+            found = 1;
+            break;
+        }
+    }
+
+    if (!found)
+        printf("Student not found.\n");
+}
+
+// Main function with switch-case
+int main() {
+    int choice;
+
+    while (1) {
+        printf("\n===== Student Management System =====\n");
+        printf("1. Add Student\n");
+        printf("2. Display All Students\n");
+        printf("3. Search Student by Roll Number\n");
+        printf("4. Exit\n");
+        printf("Enter your choice: ");
+        scanf("%d", &choice);
+
+        switch (choice) {
+            case 1:
+                addStudent();
+                break;
+            case 2:
+                displayStudents();
+                break;
+            case 3:
+                searchStudent();
+                break;
+            case 4:
+                printf("Exiting the program. Goodbye!\n");
+                exit(0);
+            default:
+                printf("Invalid choice! Please try again.\n");
+        }
+    }
+
+    return 0;
+}
